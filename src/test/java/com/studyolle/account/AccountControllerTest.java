@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -41,7 +43,9 @@ class AccountControllerTest {
 				.param("email", "email@email.com"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeExists("error"))
-				.andExpect(view().name("account/checked-email"));
+				.andExpect(view().name("account/checked-email"))
+				.andExpect(unauthenticated());
+
 
 
 	}
@@ -66,7 +70,8 @@ class AccountControllerTest {
 				.andExpect(model().attributeDoesNotExist("error"))
 				.andExpect(model().attributeExists("nickname"))
 				.andExpect(model().attributeExists("numberOfUser"))
-				.andExpect(view().name("account/checked-email"));
+				.andExpect(view().name("account/checked-email"))
+				.andExpect(authenticated()); // 인증이 된 사용자인지 확인
 
 	}
 
@@ -76,19 +81,22 @@ class AccountControllerTest {
 		mockMvc.perform(get("/sign-up"))
 			   .andExpect(status().isOk())
 			   .andExpect(view().name("account/sign-up"))
-			   .andExpect(model().attributeExists("signUpForm"));
+			   .andExpect(model().attributeExists("signUpForm"))
+				.andExpect(unauthenticated());
 	}
 
 	@DisplayName("회원 가입 처리 - 입력값 정상")
 	@Test
 	void signUpSubmit_with_correct_input() throws Exception {
 		mockMvc.perform(post("/sign-up")
-		.param("nickname", "sonnie")
-		.param("email", "email@email.com")
-		.param("password", "12345789")
-		.with(csrf()))
+				.param("nickname", "sonnie")
+				.param("email", "email@email.com")
+				.param("password", "12345789")
+				.with(csrf()))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/"));
+				.andExpect(view().name("redirect:/"))
+				.andExpect(authenticated().withUsername("sonnie"));
+
 
 
 		Account account = accountRepository.findByEmail("email@email.com");
