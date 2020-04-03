@@ -6,7 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+
 
     @Transactional
     public Account processNewAccount(SignUpForm signUpForm) {
@@ -56,7 +56,7 @@ public class AccountService {
     public void login(Account account) {
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                account.getNickname(), // principle
+                new UserAccount(account), // principle
                 account.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))); // 권한
         SecurityContextHolder.getContext().setAuthentication(token);

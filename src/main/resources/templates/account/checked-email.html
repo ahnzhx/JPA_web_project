@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>sonnie study olle</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <style>
-        .container{
-            max-width:100%;
-        }
-    </style>
+<head th:replace="fragments.html :: head">
+
 </head>
 <body>
-
+<div th:replace="fragments.html :: main-nav"></div>
     <div class="py-5 text-center" th:if="${error}">
         <p class="lead">스터디 올레 이메일 확인</p>
         <div class="alert alert-danger" role="alert">

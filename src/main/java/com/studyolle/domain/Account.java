@@ -1,5 +1,6 @@
 package com.studyolle.domain;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -49,6 +50,7 @@ public class Account {
 	private boolean studyEnrollmentResultByEmail;
 	private boolean studyEnrollmentResultByWeb;
 	private boolean studyUpdatedByWeb;
+	private LocalDateTime emailCheckTokenGeneratedAt;
 
 	public void generateEmailCheckToken() {
 		this.emailCheckToken = UUID.randomUUID().toString();
@@ -57,9 +59,15 @@ public class Account {
 	public void completeSignUp() {
 		this.emailVerified = true;
 		this.joinAt= LocalDateTime.now();
+		this.emailCheckTokenGeneratedAt = LocalDateTime.now();
 	}
 
 	public boolean isValidToken(String token) {
 		return emailCheckToken.equals(token);
+	}
+
+	public boolean canSendConfirmEmail() {
+		return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
+
 	}
 }
