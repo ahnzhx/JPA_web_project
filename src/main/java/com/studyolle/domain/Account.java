@@ -2,15 +2,10 @@ package com.studyolle.domain;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,11 +41,14 @@ public class Account {
 	private String profileImage;
 	
 	private boolean studyCreatedByEmail;
-	private boolean studyCreatedByWeb;
+	private boolean studyCreatedByWeb= true;
 	private boolean studyEnrollmentResultByEmail;
-	private boolean studyEnrollmentResultByWeb;
-	private boolean studyUpdatedByWeb;
+	private boolean studyEnrollmentResultByWeb = true;
+	private boolean studyUpdatedByWeb = true;
 	private LocalDateTime emailCheckTokenGeneratedAt;
+
+	@ManyToMany
+	private Set<Tag> tags;
 
 	public void generateEmailCheckToken() {
 		this.emailCheckToken = UUID.randomUUID().toString();
