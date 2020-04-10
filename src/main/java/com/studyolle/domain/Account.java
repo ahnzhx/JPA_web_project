@@ -47,8 +47,8 @@ public class Account {
 	private boolean studyUpdatedByWeb = true;
 	private LocalDateTime emailCheckTokenGeneratedAt;
 
-	@ManyToMany
-	private Set<Tag> tags;
+	/*@ManyToMany
+	private Set<Tag> tags;*/
 
 	public void generateEmailCheckToken() {
 		this.emailCheckToken = UUID.randomUUID().toString();
