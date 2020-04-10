@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -106,5 +107,21 @@ public class AccountService implements UserDetailsService {
     public void updateNotifications(Account account, Notifications notifications) {
         modelMapper.map(notifications, account);
         accountRepository.save(account);
+    }
+
+    public void updateNickname(Account account, String nickname) {
+        account.setNickname(nickname);
+        accountRepository.save(account);
+        login(account);
+    }
+
+    public void sendLoginLink(Account account) {
+        account.generateEmailCheckToken();
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(account.getEmail());
+        mailMessage.setSubject("스터디올래, 회원 가입 인증");
+        mailMessage.setText ("/login-by-email?token="+account.getEmailCheckToken()
+                +"&email="+account.getEmail());
+        javaMailSender.send(mailMessage);
     }
 }

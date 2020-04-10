@@ -3,9 +3,11 @@ package com.studyolle.settings;
 import com.studyolle.account.AccountService;
 import com.studyolle.account.CurrentUser;
 import com.studyolle.domain.Account;
+import com.studyolle.settings.form.NicknameForm;
 import com.studyolle.settings.form.Notifications;
 import com.studyolle.settings.form.PasswordForm;
 import com.studyolle.settings.form.Profile;
+import com.studyolle.settings.validator.NicknameValidator;
 import com.studyolle.settings.validator.PasswordFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,13 +34,21 @@ public class SettingsController {
     static final String SETTINGS_PASSWORD_URL_NAME = "/settings/password";
     static final String SETTINGS_NOTIFICATIONS_VIEW_NAME="settings/notifications";
     static final String SETTINGS_NOTIFICATIONS_URL_NAME = "/settings/notifications";
+    static final String SETTINGS_ACCOUNT_VIEW_NAME="settings/account";
+    static final String SETTINGS_ACCOUNT_URL_NAME = "/settings/account";
 
     private final AccountService accountService;
     private final ModelMapper modelMapper;
+    private final NicknameValidator nicknameValidator;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder){
         webDataBinder.addValidators(new PasswordFormValidator());
+    }
+
+    @InitBinder("nicknameForm")
+    public void nicknameInitBinder(WebDataBinder webDataBinder){
+        webDataBinder.addValidators(nicknameValidator);
     }
 
     @GetMapping(SETTINGS_PROFILE_URL_NAME)
@@ -107,7 +117,26 @@ public class SettingsController {
         accountService.updateNotifications(account, notifications);
         attributes.addFlashAttribute("message", "Updated Notifications settings");
         return "redirect:" + SETTINGS_NOTIFICATIONS_URL_NAME;
+    }
 
+    @GetMapping(SETTINGS_ACCOUNT_URL_NAME)
+    public String updateAccountForm(@CurrentUser Account account, Model model){
+        model.addAttribute(account);
+        model.addAttribute(modelMapper.map(account, NicknameForm.class));
+        return SETTINGS_ACCOUNT_VIEW_NAME;
+    }
+
+    @PostMapping(SETTINGS_ACCOUNT_URL_NAME)
+    public String updateAccount(@CurrentUser Account account, @Valid NicknameForm nicknameForm, Errors errors,
+                                Model model, RedirectAttributes attributes){
+        if(errors.hasErrors()){
+            model.addAttribute(account);
+            return SETTINGS_ACCOUNT_VIEW_NAME;
+
+        }
+        accountService.updateNickname(account, nicknameForm.getNickname());
+        attributes.addFlashAttribute("message", "Successfully updated nickname");
+        return "redirect:"+SETTINGS_ACCOUNT_URL_NAME;
 
     }
 }
