@@ -2,6 +2,7 @@ package com.studyolle.domain;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -48,8 +49,11 @@ public class Account {
 	private boolean studyUpdatedByWeb = true;
 	private LocalDateTime emailCheckTokenGeneratedAt;
 
-	/*@ManyToMany
-	private Set<Tag> tags;*/
+	@ManyToMany
+	private Set<Tag> tags = new HashSet<>();
+
+	@ManyToMany
+	private Set<Zone> zones = new HashSet<>();
 
 	public void generateEmailCheckToken() {
 		this.emailCheckToken = UUID.randomUUID().toString();
