@@ -5,21 +5,96 @@
 
 <head th:fragment="head">
     <meta charset="UTF-8">
-    <title>sonnie study olle</title>
+    <title>sonnie studyolle</title>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css"/>
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
     <style>
-        .container{
-            max-width:100%;
+         .container {
+            max-width: 100%;
         }
+
         .tagify-outside{
             border: 0;
             padding: 0;
             margin: 0;
+        }
+
+        #study-logo {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+
+        #study-logo img {
+            height: auto;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        body,
+        input,
+        button,
+        select,
+        optgroup,
+        textarea,
+        .tooltip,
+        .popover {
+            font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        table th {
+            font-weight: lighter;
+        }
+
+        mark {
+            padding: 0;
+            background: transparent;
+            background: linear-gradient(to right, #f0ad4e 50%, transparent 50%);
+            background-position: right bottom;
+            background-size: 200% 100%;
+            transition: all .5s ease;
+            color: #fff;
+        }
+
+        mark.animate {
+            background-position: left bottom;
+            color: #000;
+        }
+
+        .jumbotron {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            margin-bottom: 0;
+            background-color: #fff;
+        }
+        @media (min-width: 768px) {
+            .jumbotron {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
+            }
+        }
+
+        .jumbotron p:last-child {
+            margin-bottom: 0;
+        }
+
+        .jumbotron h1 {
+            font-weight: 300;
+        }
+
+        .jumbotron .container {
+            max-width: 40rem;
         }
     </style>
 </head>
@@ -54,7 +129,7 @@
                 </a>
             </li>
             <li class="nav-item" sec:authrize="isAuthenticated()">
-                <a class="nav-link btn btn-outline-primary" th:href="@{/notifications}">
+                <a class="nav-link btn btn-outline-primary" th:href="@{/new-study}">
                     <i class="fa fa-plus" aria-hidden="true"></i>스터디 개설</a>
             </li>
 
@@ -92,7 +167,12 @@
     <a class="list-group-item list-group-item-action list-group-item-danger" th:classappend="${currentMenu == 'account'}? active" href="#" th:href="@{/settings/account}">계정</a>
 </div>
 
-
+<div th:fragment="message" th:if="${message}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+    <span th:text="${message}">완료</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
     $(function() {
         var csrfToken = [[${_csrf.token}]];
@@ -198,6 +278,9 @@
         });
     </script>
 </div>
+
+</script>
+
 
 <footer th:fragment="footer">
     <div class="row justify-content-center">
