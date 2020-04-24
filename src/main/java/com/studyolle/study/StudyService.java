@@ -4,12 +4,17 @@ import com.studyolle.domain.Account;
 import com.studyolle.domain.Study;
 import com.studyolle.domain.Tag;
 import com.studyolle.domain.Zone;
+import com.studyolle.study.event.StudyCreatedEvent;
+import com.studyolle.study.event.StudyUpdatedEvent;
 import com.studyolle.study.form.StudyDescriptionForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.studyolle.study.form.StudyForm.VALID_PATH_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final ModelMapper modelMapper;
+    private final ApplicationEventPublisher eventPublisher;
+
     public Study createNewStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
         newStudy.addManager(account);
@@ -93,5 +100,51 @@ public class StudyService {
         checkIfExistingStudy(path, study);
         checkIfManager(account, study);
         return study;
+    }
+
+    public Study getStudyToUpdateStatus(Account account, String path) {
+        Study study = studyRepository.findStudyWithManagersByPath(path);
+        checkIfExistingStudy(path, study);
+        checkIfManager(account, study);
+        return study;
+    }
+
+    public void publish(Study study) {
+        study.publish();
+        this.eventPublisher.publishEvent(new StudyCreatedEvent(study));
+    }
+
+    public void close(Study study) {
+        study.close();
+        this.eventPublisher.publishEvent(new StudyUpdatedEvent(study, "스터디를 종료했습니다."));
+    }
+
+    public void startRecruit(Study study) {
+        study.startRecruit();
+        eventPublisher.publishEvent(new StudyUpdatedEvent(study, "팀원 모집을 시작합니다."));
+    }
+
+    public void stopRecruit(Study study) {
+        study.stopRecruit();
+        eventPublisher.publishEvent(new StudyUpdatedEvent(study, "팀원 모집을 종료합니다."));
+    }
+
+    public boolean isValidPath(String newPath){
+        if(!newPath.matches(VALID_PATH_PATTERN)){
+            return false;
+        }
+        return !studyRepository.existsByPath(newPath);
+    }
+
+    public void updateStudyPath(Study study, String newPath) {
+        study.setPath(newPath);
+    }
+
+    public boolean isValidTitle(String newTitle){
+        return newTitle.length() <= 50;
+    }
+
+    public void updateStudyTitle(Study study, String newTitle) {
+        study.setTitle(newTitle);
     }
 }
