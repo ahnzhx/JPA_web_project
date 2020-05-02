@@ -70,6 +70,8 @@ public class Study {
 
     private boolean useBanner;
 
+    private int memberCount;
+
 
     public void addManager(Account account) {
         this.managers.add(account);
@@ -124,7 +126,7 @@ public class Study {
         return this.published && this.recruitingUpdatedDateTime == null || this.recruitingUpdatedDateTime.isBefore(LocalDateTime.now().minusHours(1));
     }
     public boolean isRemovable(){
-        return !this.published;
+        return !this.published; // TODO 모임을 했던 스터디는 삭제할 수 없다.
     }
 
     public void startRecruit() {
@@ -143,6 +145,16 @@ public class Study {
         } else {
             throw new RuntimeException("인원 모집을 멈출 수 없습니다. 스터디를 공개하거나 한 시간 뒤 다시 시도하세요.");
         }
+    }
+
+    public void addMember(Account account) {
+        this.getMembers().add(account);
+        this.memberCount++;
+    }
+
+    public void removeMember(Account account){
+        this.getMembers().remove(account);
+        this.memberCount--;
     }
 }
 

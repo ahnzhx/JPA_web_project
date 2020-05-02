@@ -13,7 +13,6 @@ import com.studyolle.study.form.StudyDescriptionForm;
 import com.studyolle.tag.TagRepository;
 import com.studyolle.tag.TagService;
 import com.studyolle.zone.ZoneRepository;
-import com.sun.mail.iap.Response;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -254,4 +253,13 @@ public class StudySettingController {
         attributes.addFlashAttribute("message", "스터디 이름을 수정했습니다.");
         return "redirect:/study/" + study.getEncodedPath() + "/settings/study";
     }
+
+    @PostMapping("/study/remove")
+    public String removeStudy(@CurrentUser Account account, @PathVariable String path, Model model){
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+        studyService.remove(study);
+        return "redirect:/";
+    }
+
+
 }
