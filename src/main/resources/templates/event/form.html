@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+    <nav th:replace="fragments.html :: main-nav"></nav>
+    <div th:replace="study/studyFragments.html :: study-banner"></div>
+    <div class="container">
+        <div th:replace="event/eventFragments.html :: event-form (mode='new', action='/study/' + ${study.path} + '/new-event/')"></div>
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
+
+    <script th:replace="fragments.html :: form-validation"></script>
+    <script th:replace="study/studyFragments.html :: editor-script"></script>
+</body>
+</html>
