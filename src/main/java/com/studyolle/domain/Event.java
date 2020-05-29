@@ -10,6 +10,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * enrollment n+1 문제 해결
+ */
+@NamedEntityGraph(
+        name="Event.withEnrollments", // event를 조회할때 enrollment도 같이 가져오게 된다
+        attributeNodes = @NamedAttributeNode("enrollments")
+)
 @Entity
 @Getter @Setter @EqualsAndHashCode(of="id")
 public class Event {
