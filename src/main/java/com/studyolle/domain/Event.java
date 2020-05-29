@@ -149,5 +149,7 @@ public class Event {
             enrollment.setAccepted(false);
         }
     }
-
+    public int numberOfRemainSpots(){
+        return this.limitOfEnrollments-(int) this.enrollments.stream().filter(Enrollment::isAccepted).count();
+    }
 }
