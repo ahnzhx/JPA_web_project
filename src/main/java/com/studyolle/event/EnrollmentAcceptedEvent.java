@@ -1,7 +1,6 @@
 package com.studyolle.event;
 
 import com.studyolle.domain.Enrollment;
-import org.springframework.context.ApplicationEvent;
 
 public class EnrollmentAcceptedEvent extends EnrollmentEvent {
 

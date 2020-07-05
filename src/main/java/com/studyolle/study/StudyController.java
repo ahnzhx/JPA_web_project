@@ -80,6 +80,8 @@ public class StudyController {
     public String leaveStudy(@CurrentUser Account account, @PathVariable String path){
         Study study = studyRepository.findStudyWithMembersByPath(path);
         studyService.removeMember(study, account);
+
+
         return "redirect:/study/"+study.getEncodedPath()+"/members";
 
     }
